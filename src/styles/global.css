@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@import "tailwindcss/preflight";
+
+@tailwind utilities;
+
+/* Dán toàn bộ custom CSS của bạn vào đây */
+body {
+    font-family: 'Comfortaa', cursive;
+    overflow-x: hidden;
+}
+.full-bg {
+    background: linear-gradient(rgba(10,0,30,0.7), rgba(20,0,40,0.8)),
+    url('https://images6.alphacoders.com/791/791085.png') center/cover no-repeat fixed;
+    min-height: 100vh;
+}
+.card { /* ... toàn bộ style card như trước ... */ }
+/* ... paste hết phần <style> cũ vào đây ... */
