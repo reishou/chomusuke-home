@@ -1,149 +1,249 @@
 ---
-// src/pages/index.astro
-import '../styles/global.css';  // Nếu bạn đã cài Tailwind local
+import { getCollection } from 'astro:content';
+// Component Imports
+import CallToAction from '../components/CallToAction.astro';
+// Page section components
+import ContactCTA from '../components/ContactCTA.astro';
+import Grid from '../components/Grid.astro';
+import Hero from '../components/Hero.astro';
+import Icon from '../components/Icon.astro';
+import Pill from '../components/Pill.astro';
+import PortfolioPreview from '../components/PortfolioPreview.astro';
+import Skills from '../components/Skills.astro';
+// Layout import — provides basic page elements: <head>, <nav>, <footer> etc.
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Content Fetching: List four most recent work projects
+const projects = (await getCollection('work'))
+	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+	.slice(0, 4);
+
+// Full Astro Component Syntax:
+// https://docs.astro.build/basics/astro-components/
 ---
 
-<!doctype html>
-<html lang="en" class="bg-gray-900 text-gray-100">
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Chomusuke Demo Hub</title>
+<BaseLayout>
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="hero">
+				<Hero
+					title="Hello, my name is Jeanine White"
+					tagline="I am a Creative Developer who is currently based in Portland, Oregon."
+					align="start"
+				>
+					<div class="roles">
+						<Pill><Icon icon="code" size="1.33em" /> Developer</Pill>
+						<Pill><Icon icon="microphone-stage" size="1.33em" /> Speaker</Pill>
+						<Pill><Icon icon="pencil-line" size="1.33em" /> Writer</Pill>
+					</div>
+				</Hero>
 
-	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+				<img
+					alt="Jeanine White smiling in a red plaid shirt and tortoise shell glasses"
+					width="480"
+					height="620"
+					src="/assets/portrait.jpg"
+				/>
+			</header>
 
-	<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Comfortaa:wght@700&display=swap" rel="stylesheet" />
+			<Skills />
+		</div>
 
-	<style>
-		body { font-family: 'Comfortaa', cursive; overflow-x: hidden; }
-		.full-bg {
-			/* Tối vừa đủ để Chomusuke hiện rõ đầu và lửa */
-			background: linear-gradient(rgba(10,0,30,0.65), rgba(20,0,40,0.85)),
-			url('https://images6.alphacoders.com/791/791085.png') center/cover no-repeat fixed;
-			min-height: 100vh;
+		<main class="wrapper stack gap-20 lg:gap-48">
+			<section class="section with-background with-cta">
+				<header class="section-header stack gap-2 lg:gap-4">
+					<h3>Selected Work</h3>
+					<p>Take a look below at some of my featured work for clients from the past few years.</p>
+				</header>
+
+				<div class="gallery">
+					<Grid variant="offset">
+						{
+							projects.map((project) => (
+								<li>
+									<PortfolioPreview project={project} />
+								</li>
+							))
+						}
+					</Grid>
+				</div>
+
+				<div class="cta">
+					<CallToAction href="/work/">
+						View All
+						<Icon icon="arrow-right" size="1.2em" />
+					</CallToAction>
+				</div>
+			</section>
+
+			<section class="section with-background bg-variant">
+				<header class="section-header stack gap-2 lg:gap-4">
+					<h3>Mentions</h3>
+					<p>
+						I have been fortunate enough to receive praise for my work in several publications. Take
+						a look below to learn more.
+					</p>
+				</header>
+
+				<div class="gallery">
+					<Grid variant="small">
+						{
+							['Medium', 'BuzzFeed', 'The Next Web', 'awwwards.', 'TechCrunch'].map((brand) => (
+								<li class="mention-card">
+									<p>{brand}</p>
+								</li>
+							))
+						}
+					</Grid>
+				</div>
+			</section>
+		</main>
+
+		<ContactCTA />
+	</div>
+</BaseLayout>
+
+<style>
+	.hero {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2rem;
+	}
+
+	.roles {
+		display: none;
+	}
+
+	.hero img {
+		aspect-ratio: 5 / 4;
+		object-fit: cover;
+		object-position: top;
+		border-radius: 1.5rem;
+		box-shadow: var(--shadow-md);
+	}
+
+	@media (min-width: 50em) {
+		.hero {
+			display: grid;
+			grid-template-columns: 6fr 4fr;
+			padding-inline: 2.5rem;
+			gap: 3.75rem;
 		}
-		.card {
-			backdrop-filter: blur(22px);
-			background: rgba(20,20,40,0.45);
-			border: 2px solid rgba(255,100,200,0.4);
-			border-radius: 2.5rem; /* Bo góc mạnh hơn như mockup */
-			transition: all 0.4s ease;
-			padding: 2rem;
-			box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+
+		.roles {
+			margin-top: 0.5rem;
 			display: flex;
-			flex-direction: column;
+			gap: 0.5rem;
 		}
-		.card:hover {
-			transform: translateY(-12px) scale(1.04);
-			box-shadow: 0 0 90px rgba(255,100,200,0.5);
-			border-color: rgba(255,100,200,0.8);
+
+		.hero img {
+			aspect-ratio: 3 / 4;
+			border-radius: 4.5rem;
+			object-fit: cover;
 		}
-		.glow-eyes {
-			position: absolute;
-			inset: 0;
-			background: radial-gradient(circle at center, rgba(255,100,200,0.5) 8%, transparent 50%);
-			opacity: 0;
-			transition: opacity 0.6s;
-			pointer-events: none;
+	}
+
+	/* ====================================================== */
+
+	.section {
+		display: grid;
+		gap: 2rem;
+	}
+
+	.with-background {
+		position: relative;
+	}
+
+	.with-background::before {
+		--hero-bg: var(--bg-image-subtle-2);
+
+		content: '';
+		position: absolute;
+		pointer-events: none;
+		left: 50%;
+		width: 100vw;
+		aspect-ratio: calc(2.25 / var(--bg-scale));
+		top: 0;
+		transform: translateY(-75%) translateX(-50%);
+		background:
+			url('/assets/backgrounds/noise.png') top center/220px repeat,
+			var(--hero-bg) center center / var(--bg-gradient-size) no-repeat,
+			var(--gray-999);
+		background-blend-mode: overlay, normal, normal, normal;
+		mix-blend-mode: var(--bg-blend-mode);
+		z-index: -1;
+	}
+
+	.with-background.bg-variant::before {
+		--hero-bg: var(--bg-image-subtle-1);
+	}
+
+	.section-header {
+		justify-self: center;
+		text-align: center;
+		max-width: 50ch;
+		font-size: var(--text-md);
+		color: var(--gray-300);
+	}
+
+	.section-header h3 {
+		font-size: var(--text-2xl);
+	}
+
+	@media (min-width: 50em) {
+		.section {
+			grid-template-columns: repeat(4, 1fr);
+			grid-template-areas: 'header header header header' 'gallery gallery gallery gallery';
+			gap: 5rem;
 		}
-		.card:hover .glow-eyes { opacity: 0.7; }
-		#particles-bg { position: fixed; inset: 0; z-index: -1; }
 
-		/* Button giống hệt mockup: đỏ → hồng đậm, bo tròn cực mạnh */
-		.enter-btn {
-			background: linear-gradient(to right, #ff2255, #ff5588);
-			border-radius: 9999px;
-			padding: 1.1rem 2.8rem;
-			font-size: 1.8rem;
-			box-shadow: 0 8px 25px rgba(255,50,100,0.5);
-			transition: all 0.3s;
-			margin-top: auto; /* Đẩy button xuống đáy card */
+		.section.with-cta {
+			grid-template-areas: 'header header header cta' 'gallery gallery gallery gallery';
 		}
-		.enter-btn:hover {
-			background: linear-gradient(to right, #ff1144, #ff4477);
-			transform: translateY(-3px) scale(1.08);
-			box-shadow: 0 0 50px rgba(255,50,150,0.7);
+
+		.section-header {
+			grid-area: header;
+			font-size: var(--text-lg);
 		}
-	</style>
-</head>
-<body class="min-h-screen">
-<div id="particles-bg"></div>
 
-<div class="full-bg flex flex-col items-center justify-center min-h-screen py-8 px-4">
-	<!-- Hero fix giống mockup: thêm lại title hồng nhỏ trên cùng -->
-	<div class="text-center mb-12">
-		<p class="text-2xl md:text-3xl font-bold text-pink-500 mb-4 tracking-wider" style="text-shadow: 0 0 15px rgba(255,100,200,0.7);">
-			Chomusuke's Lair
-		</p>
-		<h1 class="text-4xl md:text-6xl font-black mb-4 text-white">
-			Meow~ Welcome to the magical realm
-		</h1>
-		<p class="text-xl md:text-2xl text-gray-300 animate-pulse">
-			Choose your portal wisely...
-		</p>
-	</div>
-
-	<!-- Grid 3 cột từ sm trở lên -->
-	<div class="grid grid-cols-1 sm:grid-cols-3 gap-10 md:gap-16 max-w-7xl w-full">
-		<!-- PHP Portal -->
-		<div class="relative card overflow-hidden">
-			<div class="glow-eyes"></div>
-			<div class="flex flex-col h-full">
-				<div class="mb-8">
-					<h3 class="text-4xl md:text-5xl font-bold text-blue-400 mb-4">PHP Portal</h3>
-					<p class="text-lg md:text-xl text-gray-300 leading-relaxed">Classic spells with modern incantations</p>
-				</div>
-				<a href="#" class="enter-btn block text-center font-bold text-white">
-					Enter →
-				</a>
-			</div>
-		</div>
-
-		<!-- Node.js Portal -->
-		<div class="relative card overflow-hidden">
-			<div class="glow-eyes"></div>
-			<div class="flex flex-col h-full">
-				<div class="mb-8">
-					<h3 class="text-4xl md:text-5xl font-bold text-green-400 mb-4">Node.js Portal</h3>
-					<p class="text-lg md:text-xl text-gray-300 leading-relaxed">Swift wings and real-time shadows</p>
-				</div>
-				<a href="#" class="enter-btn block text-center font-bold text-white">
-					Enter →
-				</a>
-			</div>
-		</div>
-
-		<!-- Go Portal -->
-		<div class="relative card overflow-hidden">
-			<div class="glow-eyes"></div>
-			<div class="flex flex-col h-full">
-				<div class="mb-8">
-					<h3 class="text-4xl md:text-5xl font-bold text-cyan-400 mb-4">Go Portal</h3>
-					<p class="text-lg md:text-xl text-gray-300 leading-relaxed">Efficient paths through the darkness</p>
-				</div>
-				<a href="#" class="enter-btn block text-center font-bold text-white">
-					Enter →
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<script is:inline>
-	particlesJS('particles-bg', {
-		particles: {
-			number: { value: 75 },
-			color: { value: ['#ff5588', '#ff88bb', '#ff3377', '#ffffff'] },
-			shape: { type: 'circle' },
-			opacity: { value: 0.65, random: true },
-			size: { value: 4, random: true },
-			move: { enable: true, speed: 1.6, direction: 'none', random: true }
-		},
-		interactivity: {
-			events: { onhover: { enable: true, mode: 'bubble' } },
-			modes: { bubble: { distance: 180, size: 11, duration: 2, opacity: 0.8 } }
+		.section-header h3 {
+			font-size: var(--text-4xl);
 		}
-	});
-</script>
-</body>
-</html>
+
+		.with-cta .section-header {
+			justify-self: flex-start;
+			text-align: left;
+		}
+
+		.gallery {
+			grid-area: gallery;
+		}
+
+		.cta {
+			grid-area: cta;
+		}
+	}
+
+	/* ====================================================== */
+
+	.mention-card {
+		display: flex;
+		height: 7rem;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		border: 1px solid var(--gray-800);
+		border-radius: 1.5rem;
+		color: var(--gray-300);
+		background: var(--gradient-subtle);
+		box-shadow: var(--shadow-sm);
+	}
+
+	@media (min-width: 50em) {
+		.mention-card {
+			border-radius: 1.5rem;
+			height: 9.5rem;
+		}
+	}
+</style>

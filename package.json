@@ -1,5 +1,5 @@
 {
-  "name": "chomusuke-home",
+  "name": "intergalactic-iron",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -9,10 +9,6 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.6",
-    "astro-particles": "^2.10.0",
-    "tailwindcss": "^4.1.18",
-    "tsparticles": "^3.9.1"
+    "astro": "^5.16.6"
   }
 }
