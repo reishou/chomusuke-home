@@ -33,6 +33,6 @@ jobs:
           REMOTE_USER: ${{ secrets.SSH_USERNAME }}
           REMOTE_PORT: ${{ secrets.SSH_PORT }}
           SOURCE: "dist/"  # Chỉ copy folder build
-          TARGET: "/var/www/chomusuke/html"
+          TARGET: "/var/www/chomusuke.site/html"
           ARGS: "-avz --delete"  # -a: archive, -v: verbose, -z: compress, --delete: xóa file cũ không còn
           EXCLUDE: ""
