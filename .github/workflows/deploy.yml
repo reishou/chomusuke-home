@@ -10,29 +10,27 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'  # Astro khuyến nghị Node 18+ hoặc 20
-          cache: 'npm'  # Hoặc yarn/pnpm nếu bạn dùng
+          node-version: 24
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci  # Hoặc npm install nếu không có lockfile
+        run: npm ci
 
       - name: Build Astro site
-        run: npm run build  # Output sẽ ở dist/
+        run: npm run build
 
       - name: Deploy with rsync
-        uses: easingthemes/ssh-deploy@main  # Action tốt cho rsync static files (2025 vẫn maintain tốt)
-        # Hoặc dùng burnett01/rsync-deployments@7.0.1 nếu muốn mới hơn
+        uses: burnett01/rsync-deployments@v8
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
-          REMOTE_PORT: ${{ secrets.SSH_PORT }}
-          SOURCE: "dist/"  # Chỉ copy folder build
-          TARGET: "/var/www/chomusuke.site/html"
-          ARGS: "-avz --delete"  # -a: archive, -v: verbose, -z: compress, --delete: xóa file cũ không còn
-          EXCLUDE: ""
+          switches: -avzr --delete  # archive, verbose, compress, recursive, delete old files
+          path: "dist/"
+          remote_path: "/var/www/chomusuke.site/html"
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_user: ${{ secrets.SSH_USERNAME }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          remote_port: ${{ secrets.SSH_PORT }}
